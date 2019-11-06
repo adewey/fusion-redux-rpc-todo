@@ -11,11 +11,10 @@ import RPC, { RPCToken, RPCHandlersToken } from "fusion-plugin-rpc-redux-react";
 import UniversalEvents, {
   UniversalEventsToken
 } from "fusion-plugin-universal-events";
-import { FetchToken, LoggerToken } from "fusion-tokens";
+import { FetchToken } from "fusion-tokens";
 import { reactorEnhancer } from "redux-reactors";
 import reducer from "./redux/index.js";
 import handlers from "./rpc/index.js";
-import api from "./api";
 import fetch from "isomorphic-fetch";
 import MuiThemeProvider, {
   MuiThemeProviderToken
@@ -28,13 +27,9 @@ export default () => {
   app.register(Styletron);
   app.register(RPCToken, RPC);
   app.register(UniversalEventsToken, UniversalEvents);
-  if (__NODE__) {
-    app.register(RPCHandlersToken, handlers);
-    app.register(api);
-    app.register(LoggerToken, console);
-  } else {
-    app.register(FetchToken, fetch);
-  }
+  __NODE__
+    ? app.register(RPCHandlersToken, handlers)
+    : app.register(FetchToken, fetch);
   app.register(ReduxToken, Redux);
   app.register(ReducerToken, reducer);
   app.register(EnhancerToken, reactorEnhancer);
